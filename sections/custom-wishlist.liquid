@@ -1,0 +1,56 @@
+<div class="wishlist-page">
+  <h1 class="wishlist-title">Your Wishlist</h1>
+  <div id="wishlist-items" class="wishlist-grid"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+  const container = document.getElementById('wishlist-items');
+
+  if (wishlist.length === 0) {
+    container.innerHTML = "<p>No products in your wishlist.</p>";
+    return;
+  }
+
+  wishlist.forEach(handle => {
+    fetch(`/products/${handle}.js`)
+      .then(res => res.json())
+      .then(product => {
+        container.innerHTML += `
+          <div class="wishlist-card">
+            <a href="${product.url}">
+              <img src="${product.images[0]}" class="wishlist-image">
+              <h3>${product.title}</h3>
+              <p>${(product.price / 100).toFixed(2)} ${Shopify.currency.active}</p>
+            </a>
+          </div>
+        `;
+      });
+  });
+});
+</script>
+
+<style>
+.wishlist-page {
+  padding: 30px;
+}
+.wishlist-title {
+  margin-bottom: 20px;
+}
+.wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+.wishlist-card {
+  text-align: center;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 10px;
+}
+.wishlist-card img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+</style>

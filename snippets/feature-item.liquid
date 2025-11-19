@@ -1,0 +1,56 @@
+{% comment %}
+  Feature Item Snippet
+  Expects:
+  - feature.feature_image
+  - feature.feature_title
+  - feature.feature_description
+  - feature.feature_link (optional)
+  - feature.product (actual product object)
+{% endcomment %}
+
+<div class="feature-item">
+
+<div class="feature-image-wrapper">
+
+  <!-- Image linked -->
+  {% if feature_image != blank %}
+    <a href="{{ feature_link }}">
+      {{ feature_image | image_url: width: 300 | image_tag: alt: feature_title }}
+    </a>
+  {% endif %}
+
+  <!-- Hover Buttons -->
+  <div class="feature-buttons">
+
+    {% if feature_link != blank %}
+      <a href="{{ feature_link }}" class="add-to-cart-btn">View / Add</a>
+    {% endif %}
+
+<button class="wishlist-btn" data-product-id="{{ product.id }}">
+  <i class="fa-regular fa-heart"></i>
+</button>
+
+
+
+  </div>
+
+</div>
+
+
+  <!-- Text Content -->
+<div class="feature-content">
+    <div>
+  <h3>{{ feature_title }}</h3>
+  <p>{{ feature_description }}</p>
+</div>
+<div>
+  {% if feature_price %}
+    <span class="feature-price">
+      {{ feature_price | money }}
+    </span>
+  {% endif %}
+  </div>
+</div>
+
+
+</div>

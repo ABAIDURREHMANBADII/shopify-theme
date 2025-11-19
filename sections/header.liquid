@@ -247,6 +247,20 @@
           </localization-form>
         {%- endif -%}
       </div>
+
+      <a href="/pages/wishlist" class="header__icon header__icon--wishlist" title="Wishlist">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" 
+       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.84 4.61A5.5 5.5 0 0 0 12 7.28 
+             5.5 5.5 0 0 0 3.16 4.61
+             C1.24 6.52 1.24 9.61 3.16 11.53
+             L12 20.37l8.84-8.84
+             c1.92-1.92 1.92-5.01 0-6.92z">
+    </path>
+  </svg>
+  <span class="visually-hidden">Wishlist</span>
+</a>
+
       {% render 'header-search', input_id: 'Search-In-Modal' %}
 
       {%- if shop.customer_accounts_enabled -%}

@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="">
     <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="stylesheet" href="{{ 'bootstrap.min.css' | asset_url }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
@@ -313,6 +316,12 @@
       {{ content_for_layout }}
     </main>
 
+<script src="{{ 'bootstrap.bundle.min.js' | asset_url }}"></script>
+
+<script src="{{ 'feature-cards.js' | asset_url }}"></script>
+
+
+
     {% sections 'footer-group' %}
 
     <ul hidden>
@@ -364,6 +373,16 @@
         countrySelectorSearchCount: `{{ 'localization.country_results_count' | t: count: '[count]' }}`,
       };
     </script>
+  
+
+
+
+    {% raw %}
+    
+    <script>
+  console.log("Hello Bootstrap");
+</script>
+{% endraw %}
 
     {%- if settings.predictive_search_enabled -%}
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
