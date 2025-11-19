@@ -11,30 +11,6 @@
   "sections": {
     "1763552682aac1907c": {
       "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_dd2628c_Jejq8n": {
-          "type": "ai_gen_block_dd2628c",
-          "settings": {
-            "product": "sports-sandals-1",
-            "image_ratio": "3/4",
-            "card_background": "#FFFFFF",
-            "border_radius": 12,
-            "content_padding": 16,
-            "shadow_horizontal": 0,
-            "shadow_vertical": 4,
-            "shadow_blur": 12,
-            "shadow_opacity": 15,
-            "title_color": "#121212",
-            "title_size": 16,
-            "price_color": "#121212",
-            "price_size": 14
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_dd2628c_Jejq8n"
-      ],
       "settings": {}
     },
     "main": {
