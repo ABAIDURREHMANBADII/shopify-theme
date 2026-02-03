@@ -15,15 +15,16 @@
         {% assign products = collections[section.settings.collection].products %}
         {% for product in products %}
           
-{% render 'feature-item', 
-  feature_image: product.featured_image,
-  feature_title: product.title,
-  feature_price: product.price,
-  feature_description: product.description | truncatewords: 20,
-  feature_link: product.url
-%}
+        {% render 'feature-item', 
+          feature_image: product.featured_image,
+          feature_title: product.title,
+          feature_price: product.price,
+          feature_description: product.description | truncatewords: 20,
+          feature_link: product.url,
+          feature_product: product
+        %}
 
-          
+        
         {% endfor %}
       {% else %}
         <p class="text-center">No collection selected.</p>
@@ -52,7 +53,7 @@
       "type": "collection",
       "id": "collection",
       "label": "Select Collection"
-    }
+    } 
   ],
   "presets": [
     {
@@ -81,7 +82,7 @@
   color: #555;
 }
 
-.custom-feature-section .feature-grid {
+.custom-feature-section .feature-grid , .feature-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
@@ -128,6 +129,7 @@
   right: 10px;
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 8px;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -197,8 +199,6 @@
 .wishlist-btn i {
   transition: color 0.3s ease;
 }
-
-
 
 
 {% endstylesheet %}

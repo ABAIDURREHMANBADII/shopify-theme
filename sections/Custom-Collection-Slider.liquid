@@ -1,0 +1,709 @@
+{% comment %}
+  Custom Collection Slider Section with Swiper
+  File: sections/collection-slider.liquid
+{% endcomment %}
+
+<!-- Swiper CSS CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+<style>
+  .collection-slider-section-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    background-color: {{ section.settings.background_color }};
+  }
+
+  .collection-slider-container-{{ section.id }} {
+    max-width: {{ section.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .collection-slider-heading-{{ section.id }} {
+    text-align: {{ section.settings.heading_alignment }};
+    margin-bottom: 30px;
+  }
+
+  .collection-slider-heading-{{ section.id }} h2 {
+    font-size: {{ section.settings.heading_size }}px;
+    color: {{ section.settings.heading_color }};
+    margin: 0;
+    font-weight: {{ section.settings.heading_weight }};
+  }
+
+  .swiper-{{ section.id }} {
+    width: 100%;
+    padding: 20px 0 50px;
+  }
+
+  .product-card-{{ section.id }} {
+    background: {{ section.settings.card_background }};
+    border-radius: {{ section.settings.card_border_radius }}px;
+    padding: {{ section.settings.card_padding }}px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: {{ section.settings.card_border_width }}px solid {{ section.settings.card_border_color }};
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card-{{ section.id }}:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  }
+
+  .product-image-{{ section.id }} {
+    position: relative;
+    overflow: hidden;
+    border-radius: {{ section.settings.image_border_radius }}px;
+    margin-bottom: 15px;
+    aspect-ratio: {{ section.settings.image_ratio }};
+  }
+
+  .product-image-{{ section.id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .product-card-{{ section.id }}:hover .product-image-{{ section.id }} img {
+    transform: scale(1.05);
+  }
+
+  .product-title-{{ section.id }} {
+    font-size: {{ section.settings.product_title_size }}px;
+    color: {{ section.settings.product_title_color }};
+    margin: 10px 0;
+    font-weight: 600;
+    line-height: 1.3;
+    flex-grow: 1;
+  }
+
+  .product-title-{{ section.id }} a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .product-title-{{ section.id }} a:hover {
+    opacity: 0.8;
+  }
+
+  .product-price-{{ section.id }} {
+    font-size: {{ section.settings.price_size }}px;
+    color: {{ section.settings.price_color }};
+    margin: 10px 0;
+    font-weight: 700;
+  }
+
+  .product-price-{{ section.id }} .compare-price {
+    text-decoration: line-through;
+    color: {{ section.settings.compare_price_color }};
+    margin-right: 8px;
+    font-weight: 400;
+  }
+
+  .add-to-cart-btn-{{ section.id }} {
+    background: {{ section.settings.button_background }};
+    color: {{ section.settings.button_text_color }};
+    border: none;
+    padding: 12px 24px;
+    border-radius: {{ section.settings.button_border_radius }}px;
+    cursor: pointer;
+    font-size: {{ section.settings.button_text_size }}px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .add-to-cart-btn-{{ section.id }}:hover {
+    background: {{ section.settings.button_hover_background }};
+    transform: scale(1.02);
+  }
+
+  /* Swiper Navigation */
+  .swiper-button-next-{{ section.id }},
+  .swiper-button-prev-{{ section.id }} {
+    color: {{ section.settings.nav_color }} !important;
+    background: {{ section.settings.nav_background }};
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  .swiper-button-next-{{ section.id }}::after,
+  .swiper-button-prev-{{ section.id }}::after {
+    font-size: 20px !important;
+  }
+
+  /* Swiper Pagination */
+  .swiper-pagination-{{ section.id }} .swiper-pagination-bullet {
+    background: {{ section.settings.pagination_color }};
+    opacity: 0.5;
+    width: 10px;
+    height: 10px;
+  }
+
+  .swiper-pagination-{{ section.id }} .swiper-pagination-bullet-active {
+    opacity: 1;
+    background: {{ section.settings.pagination_active_color }};
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .collection-slider-heading-{{ section.id }} h2 {
+      font-size: {{ section.settings.heading_size | times: 0.8 }}px;
+    }
+    
+    .product-title-{{ section.id }} {
+      font-size: {{ section.settings.product_title_size | times: 0.9 }}px;
+    }
+  }
+</style>
+
+<div class="collection-slider-section-{{ section.id }}">
+  <div class="collection-slider-container-{{ section.id }}">
+    
+    {% if section.settings.show_heading %}
+      <div class="collection-slider-heading-{{ section.id }}">
+        <h2>{{ section.settings.heading_text }}</h2>
+      </div>
+    {% endif %}
+
+    <div class="swiper swiper-{{ section.id }}">
+      <div class="swiper-wrapper">
+        {% if section.settings.collection != blank %}
+          {% assign collection = collections[section.settings.collection] %}
+          {% for product in collection.products %}
+            <div class="swiper-slide">
+              <div class="product-card-{{ section.id }}">
+                
+                <!-- Product Image -->
+                <div class="product-image-{{ section.id }}">
+                  <a href="{{ product.url }}">
+                    {% if product.featured_image %}
+                      <img src="{{ product.featured_image | image_url: width: 500 }}" 
+                           alt="{{ product.featured_image.alt | escape }}"
+                           width="500"
+                           height="500"
+                           loading="lazy">
+                    {% else %}
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    {% endif %}
+                  </a>
+                </div>
+
+                <!-- Product Title -->
+                <h3 class="product-title-{{ section.id }}">
+                  <a href="{{ product.url }}">{{ product.title }}</a>
+                </h3>
+
+                <!-- Product Price -->
+                <div class="product-price-{{ section.id }}">
+                  {% if product.compare_at_price > product.price %}
+                    <span class="compare-price">{{ product.compare_at_price | money }}</span>
+                  {% endif %}
+                  <span class="current-price">{{ product.price | money }}</span>
+                </div>
+
+                <!-- Add to Cart Button -->
+                {% if section.settings.show_add_to_cart %}
+                  {% form 'product', product %}
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                    <button type="submit" class="add-to-cart-btn-{{ section.id }}" 
+                            {% unless product.available %}disabled{% endunless %}>
+                      {% if product.available %}
+                        {{ section.settings.button_text }}
+                      {% else %}
+                        Sold Out
+                      {% endif %}
+                    </button>
+                  {% endform %}
+                {% endif %}
+
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <!-- Placeholder for empty collection -->
+          {% for i in (1..6) %}
+            <div class="swiper-slide">
+              <div class="product-card-{{ section.id }}">
+                <div class="product-image-{{ section.id }}">
+                  {{ 'product-1' | placeholder_svg_tag }}
+                </div>
+                <h3 class="product-title-{{ section.id }}">Product Title</h3>
+                <div class="product-price-{{ section.id }}">$99.00</div>
+                <button class="add-to-cart-btn-{{ section.id }}">Add to Cart</button>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      
+      <!-- Navigation -->
+      {% if section.settings.show_navigation %}
+        <div class="swiper-button-next swiper-button-next-{{ section.id }}"></div>
+        <div class="swiper-button-prev swiper-button-prev-{{ section.id }}"></div>
+      {% endif %}
+
+      <!-- Pagination -->
+      {% if section.settings.show_pagination %}
+        <div class="swiper-pagination swiper-pagination-{{ section.id }}"></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Swiper JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const swiper{{ section.id | replace: '-', '_' }} = new Swiper('.swiper-{{ section.id }}', {
+      slidesPerView: {{ section.settings.slides_mobile }},
+      spaceBetween: {{ section.settings.space_between_mobile }},
+      loop: {{ section.settings.loop }},
+      autoplay: {{ section.settings.autoplay }} ? {
+        delay: {{ section.settings.autoplay_delay }},
+        disableOnInteraction: false,
+      } : false,
+      speed: {{ section.settings.transition_speed }},
+      navigation: {
+        nextEl: '.swiper-button-next-{{ section.id }}',
+        prevEl: '.swiper-button-prev-{{ section.id }}',
+      },
+      pagination: {
+        el: '.swiper-pagination-{{ section.id }}',
+        clickable: true,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: {{ section.settings.slides_tablet }},
+          spaceBetween: {{ section.settings.space_between_tablet }},
+        },
+        1024: {
+          slidesPerView: {{ section.settings.slides_desktop }},
+          spaceBetween: {{ section.settings.space_between_desktop }},
+        },
+      },
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Collection Slider",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "header",
+      "content": "Heading Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Show Heading",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading Text",
+      "default": "Featured Products"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading Weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Slider Settings"
+    },
+    {
+      "type": "range",
+      "id": "slides_desktop",
+      "label": "Slides on Desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "slides_tablet",
+      "label": "Slides on Tablet",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "slides_mobile",
+      "label": "Slides on Mobile",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "space_between_desktop",
+      "label": "Space Between (Desktop)",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "space_between_tablet",
+      "label": "Space Between (Tablet)",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "space_between_mobile",
+      "label": "Space Between (Mobile)",
+      "min": 10,
+      "max": 30,
+      "step": 5,
+      "default": 15,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Enable Loop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable Autoplay",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_delay",
+      "label": "Autoplay Delay (ms)",
+      "min": 1000,
+      "max": 9000,
+      "step": 500,
+      "default": 3000
+    },
+    {
+      "type": "range",
+      "id": "transition_speed",
+      "label": "Transition Speed (ms)",
+      "min": 300,
+      "max": 2000,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "Show Navigation Arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "label": "Show Pagination Dots",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container Max Width",
+      "min": 1000,
+      "max": 1600,
+      "step": 50,
+      "default": 1400,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Product Card Settings"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card Padding",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card Border Radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "default": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "label": "Card Border Width",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 1,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card Border Color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "header",
+      "content": "Product Image"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image Aspect Ratio",
+      "options": [
+        { "value": "1/1", "label": "Square (1:1)" },
+        { "value": "4/3", "label": "Landscape (4:3)" },
+        { "value": "3/4", "label": "Portrait (3:4)" },
+        { "value": "16/9", "label": "Wide (16:9)" }
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Image Border Radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Product Title"
+    },
+    {
+      "type": "range",
+      "id": "product_title_size",
+      "label": "Title Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Title Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Product Price"
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price Size",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "compare_price_color",
+      "label": "Compare Price Color",
+      "default": "#999999"
+    },
+    {
+      "type": "header",
+      "content": "Add to Cart Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_add_to_cart",
+      "label": "Show Add to Cart Button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "label": "Button Text Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_background",
+      "label": "Button Hover Background",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button Border Radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Navigation & Pagination"
+    },
+    {
+      "type": "color",
+      "id": "nav_color",
+      "label": "Navigation Arrow Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "nav_background",
+      "label": "Navigation Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "pagination_color",
+      "label": "Pagination Dot Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "pagination_active_color",
+      "label": "Active Pagination Color",
+      "default": "#000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Slider"
+    }
+  ]
+}
+{% endschema %}

@@ -17,6 +17,25 @@
 {%- endif -%}
 
 <style>
+.header__icon--wishlist {
+  position: relative;
+  display: inline-block;
+}
+
+.wishlist-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: white;
+  color: black;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  height: auto !important;
+  min-width: 22px;
+  text-align: center;
+}
+
   header-drawer {
     justify-self: start;
     margin-left: -1.2rem;
@@ -248,7 +267,7 @@
         {%- endif -%}
       </div>
 
-      <a href="/pages/wishlist" class="header__icon header__icon--wishlist" title="Wishlist">
+<a href="/pages/wishlist-page" class="header__icon header__icon--wishlist" title="Wishlist">
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" 
        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M20.84 4.61A5.5 5.5 0 0 0 12 7.28 
@@ -258,6 +277,7 @@
              c1.92-1.92 1.92-5.01 0-6.92z">
     </path>
   </svg>
+  <span class="wishlist-count">0</span>
   <span class="visually-hidden">Wishlist</span>
 </a>
 
@@ -438,7 +458,39 @@
   }
 
   customElements.define('sticky-header', StickyHeader);
+
+
+
+
+
 {% endjavascript %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const countSpan = document.querySelector(".header__icon--wishlist .wishlist-count");
+
+  function updateWishlistCount() {
+    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    countSpan.textContent = wishlist.length;
+  }
+
+  // Initial count
+  updateWishlistCount();
+
+  // Listen for changes from other pages or buttons
+  window.addEventListener("storage", function(e) {
+    if (e.key === "wishlist") {
+      updateWishlistCount();
+    }
+  });
+
+  // Optional: Also update when hearts are clicked on current page
+  document.addEventListener("click", function(e){
+    if(e.target.closest(".wishlist-btn")) {
+      updateWishlistCount();
+    }
+  });
+});
+</script>
 
 <script type="application/ld+json">
   {

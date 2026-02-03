@@ -9,17 +9,12 @@
  */
 {
   "sections": {
-    "1763552682aac1907c": {
-      "type": "_blocks",
-      "settings": {}
-    },
     "main": {
       "type": "custom-wishlist",
       "settings": {}
     }
   },
   "order": [
-    "1763552682aac1907c",
     "main"
   ]
 }
